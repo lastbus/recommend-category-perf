@@ -226,7 +226,7 @@
                                 dataType: "json",
                                 success: function(result) {
                                     if (result == "0") {
-                                        alert("已经是一次类目!");
+                                        alert("已经是一级类目!");
                                     } else {
                                         $("#parentId").val("");
                                         $("#categoryid").val(result.sid);

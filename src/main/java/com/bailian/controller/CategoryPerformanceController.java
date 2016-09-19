@@ -123,10 +123,11 @@ public class CategoryPerformanceController {
         CategoryPerformanceScore basic = this.categoryPerformanceScoreService.selectByPrimaryKey(Integer.parseInt(categorySid));
         JSONObject result = new JSONObject();
         int sid = basic.getParentSid();
+        result.put("sid", sid);
         if (sid == 0) {
             return "0";
         } else {
-            return result.put("sid", sid).toString();
+            return result.toString();
         }
     }
 
