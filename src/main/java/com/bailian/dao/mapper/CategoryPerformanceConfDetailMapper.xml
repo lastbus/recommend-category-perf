@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bailian.dao.CategoryPerformanceConfDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.bailian.model.CategoryPerformanceConfDetail" >
+    <result column="components" property="components" jdbcType="VARCHAR" />
+    <result column="sub_comp" property="subComp" jdbcType="VARCHAR" />
+    <result column="meaning" property="meaning" jdbcType="VARCHAR" />
+    <result column="weight" property="weight" jdbcType="DOUBLE" />
+    <result column="valid" property="valid" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.bailian.model.CategoryPerformanceConfDetail" >
+    insert into bl_category_performance_conf_detail (components, sub_comp, meaning, 
+      weight, valid)
+    values (#{components,jdbcType=VARCHAR}, #{subComp,jdbcType=VARCHAR}, #{meaning,jdbcType=VARCHAR}, 
+      #{weight,jdbcType=DOUBLE}, #{valid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bailian.model.CategoryPerformanceConfDetail" >
+    insert into bl_category_performance_conf_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="components != null" >
+        components,
+      </if>
+      <if test="subComp != null" >
+        sub_comp,
+      </if>
+      <if test="meaning != null" >
+        meaning,
+      </if>
+      <if test="weight != null" >
+        weight,
+      </if>
+      <if test="valid != null" >
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="components != null" >
+        #{components,jdbcType=VARCHAR},
+      </if>
+      <if test="subComp != null" >
+        #{subComp,jdbcType=VARCHAR},
+      </if>
+      <if test="meaning != null" >
+        #{meaning,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null" >
+        #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="valid != null" >
+        #{valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="listPage" resultMap="BaseResultMap">
+    select * from bl_category_performance_conf_detail
+  </select>
+</mapper>

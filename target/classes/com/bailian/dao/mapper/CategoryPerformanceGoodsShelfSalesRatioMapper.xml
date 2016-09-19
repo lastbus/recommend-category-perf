@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bailian.dao.CategoryPerformanceGoodsShelfSalesRatioMapper" >
+  <resultMap id="BaseResultMap" type="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatio" >
+    <id column="category_sid" property="categorySid" jdbcType="INTEGER" />
+    <id column="goods_sid" property="goodsSid" jdbcType="INTEGER" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="goods_sales_name" property="goodsSalesName" jdbcType="VARCHAR" />
+    <result column="stock" property="stock" jdbcType="INTEGER" />
+    <result column="avg_day_sale_sum" property="avgDaySaleSum" jdbcType="DOUBLE" />
+    <result column="ratio" property="ratio" jdbcType="DOUBLE" />
+    <result column="cdate" property="cdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    category_sid, goods_sid, category_name, level, goods_sales_name, stock, avg_day_sale_sum, 
+    ratio, cdate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatioKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_category_performance_monthly_goods_shelf_sales_ratio
+    where category_sid = #{categorySid,jdbcType=INTEGER}
+      and goods_sid = #{goodsSid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatioKey" >
+    delete from bl_category_performance_monthly_goods_shelf_sales_ratio
+    where category_sid = #{categorySid,jdbcType=INTEGER}
+      and goods_sid = #{goodsSid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatio" >
+    insert into bl_category_performance_monthly_goods_shelf_sales_ratio (category_sid, goods_sid, category_name, 
+      level, goods_sales_name, stock, 
+      avg_day_sale_sum, ratio, cdate
+      )
+    values (#{categorySid,jdbcType=INTEGER}, #{goodsSid,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, 
+      #{level,jdbcType=INTEGER}, #{goodsSalesName,jdbcType=VARCHAR}, #{stock,jdbcType=INTEGER}, 
+      #{avgDaySaleSum,jdbcType=DOUBLE}, #{ratio,jdbcType=DOUBLE}, #{cdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatio" >
+    insert into bl_category_performance_monthly_goods_shelf_sales_ratio
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="categorySid != null" >
+        category_sid,
+      </if>
+      <if test="goodsSid != null" >
+        goods_sid,
+      </if>
+      <if test="categoryName != null" >
+        category_name,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="goodsSalesName != null" >
+        goods_sales_name,
+      </if>
+      <if test="stock != null" >
+        stock,
+      </if>
+      <if test="avgDaySaleSum != null" >
+        avg_day_sale_sum,
+      </if>
+      <if test="ratio != null" >
+        ratio,
+      </if>
+      <if test="cdate != null" >
+        cdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="categorySid != null" >
+        #{categorySid,jdbcType=INTEGER},
+      </if>
+      <if test="goodsSid != null" >
+        #{goodsSid,jdbcType=INTEGER},
+      </if>
+      <if test="categoryName != null" >
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="goodsSalesName != null" >
+        #{goodsSalesName,jdbcType=VARCHAR},
+      </if>
+      <if test="stock != null" >
+        #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="avgDaySaleSum != null" >
+        #{avgDaySaleSum,jdbcType=DOUBLE},
+      </if>
+      <if test="ratio != null" >
+        #{ratio,jdbcType=DOUBLE},
+      </if>
+      <if test="cdate != null" >
+        #{cdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatio" >
+    update bl_category_performance_monthly_goods_shelf_sales_ratio
+    <set >
+      <if test="categoryName != null" >
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="goodsSalesName != null" >
+        goods_sales_name = #{goodsSalesName,jdbcType=VARCHAR},
+      </if>
+      <if test="stock != null" >
+        stock = #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="avgDaySaleSum != null" >
+        avg_day_sale_sum = #{avgDaySaleSum,jdbcType=DOUBLE},
+      </if>
+      <if test="ratio != null" >
+        ratio = #{ratio,jdbcType=DOUBLE},
+      </if>
+      <if test="cdate != null" >
+        cdate = #{cdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where category_sid = #{categorySid,jdbcType=INTEGER}
+      and goods_sid = #{goodsSid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bailian.model.CategoryPerformanceGoodsShelfSalesRatio" >
+    update bl_category_performance_monthly_goods_shelf_sales_ratio
+    set category_name = #{categoryName,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      goods_sales_name = #{goodsSalesName,jdbcType=VARCHAR},
+      stock = #{stock,jdbcType=INTEGER},
+      avg_day_sale_sum = #{avgDaySaleSum,jdbcType=DOUBLE},
+      ratio = #{ratio,jdbcType=DOUBLE},
+      cdate = #{cdate,jdbcType=TIMESTAMP}
+    where category_sid = #{categorySid,jdbcType=INTEGER}
+      and goods_sid = #{goodsSid,jdbcType=INTEGER}
+  </update>
+  <select id="listPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from bl_category_performance_monthly_goods_shelf_sales_ratio
+    <where>
+      <if test="categorySid != null" >
+        category_sid = #{categorySid,jdbcType=INTEGER}
+      </if>
+    </where>
+    <if test="columnOrder != null">
+      ORDER BY ${columnOrder}
+    </if>
+  </select>
+</mapper>

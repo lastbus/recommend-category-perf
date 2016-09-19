@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bailian.dao.YhdCategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.bailian.model.YhdCategory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="goodsNum" property="goodsnum" jdbcType="INTEGER" />
+    <result column="brandsNum" property="brandsnum" jdbcType="INTEGER" />
+    <result column="brands" property="brands" jdbcType="VARCHAR" />
+    <result column="min_price" property="minPrice" jdbcType="DOUBLE" />
+    <result column="max_price" property="maxPrice" jdbcType="DOUBLE" />
+    <result column="price_histgram" property="priceHistgram" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, category_name, url, goodsNum, brandsNum, brands, min_price, max_price, price_histgram
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from YHD_CATEGORY
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from YHD_CATEGORY
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bailian.model.YhdCategory" >
+    insert into YHD_CATEGORY (id, category_name, url, 
+      goodsNum, brandsNum, brands, 
+      min_price, max_price, price_histgram
+      )
+    values (#{id,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{goodsnum,jdbcType=INTEGER}, #{brandsnum,jdbcType=INTEGER}, #{brands,jdbcType=VARCHAR}, 
+      #{minPrice,jdbcType=DOUBLE}, #{maxPrice,jdbcType=DOUBLE}, #{priceHistgram,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bailian.model.YhdCategory" >
+    insert into YHD_CATEGORY
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="categoryName != null" >
+        category_name,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="goodsnum != null" >
+        goodsNum,
+      </if>
+      <if test="brandsnum != null" >
+        brandsNum,
+      </if>
+      <if test="brands != null" >
+        brands,
+      </if>
+      <if test="minPrice != null" >
+        min_price,
+      </if>
+      <if test="maxPrice != null" >
+        max_price,
+      </if>
+      <if test="priceHistgram != null" >
+        price_histgram,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="categoryName != null" >
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsnum != null" >
+        #{goodsnum,jdbcType=INTEGER},
+      </if>
+      <if test="brandsnum != null" >
+        #{brandsnum,jdbcType=INTEGER},
+      </if>
+      <if test="brands != null" >
+        #{brands,jdbcType=VARCHAR},
+      </if>
+      <if test="minPrice != null" >
+        #{minPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="maxPrice != null" >
+        #{maxPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="priceHistgram != null" >
+        #{priceHistgram,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bailian.model.YhdCategory" >
+    update YHD_CATEGORY
+    <set >
+      <if test="categoryName != null" >
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsnum != null" >
+        goodsNum = #{goodsnum,jdbcType=INTEGER},
+      </if>
+      <if test="brandsnum != null" >
+        brandsNum = #{brandsnum,jdbcType=INTEGER},
+      </if>
+      <if test="brands != null" >
+        brands = #{brands,jdbcType=VARCHAR},
+      </if>
+      <if test="minPrice != null" >
+        min_price = #{minPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="maxPrice != null" >
+        max_price = #{maxPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="priceHistgram != null" >
+        price_histgram = #{priceHistgram,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bailian.model.YhdCategory" >
+    update YHD_CATEGORY
+    set category_name = #{categoryName,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      goodsNum = #{goodsnum,jdbcType=INTEGER},
+      brandsNum = #{brandsnum,jdbcType=INTEGER},
+      brands = #{brands,jdbcType=VARCHAR},
+      min_price = #{minPrice,jdbcType=DOUBLE},
+      max_price = #{maxPrice,jdbcType=DOUBLE},
+      price_histgram = #{priceHistgram,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByUrl" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select DISTINCT(a.url) url,  a.category_name, a.goodsNum, a.max_price, a.min_price ,a.brandsNum, a.brands, a.price_histgram from YHD_CATEGORY a
+join bl_category_performance_basic b on b.category_sid =  #{_parameter,jdbcType=INTEGER} and a.url = b.yhd_category_url
+  </select>
+  <select id="getCategory"  resultMap="BaseResultMap">
+    select * from YHD_CATEGORY
+  </select>
+  <select id="selectUrl"  resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from YHD_CATEGORY
+    <where>
+      <if test="_parameter != null">
+        category_name = #{_parameter,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

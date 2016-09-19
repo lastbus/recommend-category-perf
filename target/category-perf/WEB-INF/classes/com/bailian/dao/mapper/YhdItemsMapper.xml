@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bailian.dao.YhdItemsMapper" >
+  <resultMap id="BaseResultMap" type="com.bailian.model.YhdItems" >
+    <id column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+    <id column="sid" property="sid" jdbcType="INTEGER" />
+    <result column="category_url" property="categoryUrl" jdbcType="VARCHAR" />
+    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="comment" property="comment" jdbcType="INTEGER" />
+    <result column="favorable_rate" property="favorableRate" jdbcType="DOUBLE" />
+    <result column="seller" property="seller" jdbcType="VARCHAR" />
+    <result column="dt" property="dt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    goods_url, sid, category_url, goods_name, price, comment, favorable_rate, seller, 
+    dt
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.bailian.model.YhdItemsKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from yhd_items
+    where goods_url = #{goodsUrl,jdbcType=VARCHAR}
+      and sid = #{sid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.bailian.model.YhdItemsKey" >
+    delete from yhd_items
+    where goods_url = #{goodsUrl,jdbcType=VARCHAR}
+      and sid = #{sid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bailian.model.YhdItems" >
+    insert into yhd_items (goods_url, sid, category_url, 
+      goods_name, price, comment, 
+      favorable_rate, seller, dt
+      )
+    values (#{goodsUrl,jdbcType=VARCHAR}, #{sid,jdbcType=INTEGER}, #{categoryUrl,jdbcType=VARCHAR}, 
+      #{goodsName,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, #{comment,jdbcType=INTEGER}, 
+      #{favorableRate,jdbcType=DOUBLE}, #{seller,jdbcType=VARCHAR}, #{dt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bailian.model.YhdItems" >
+    insert into yhd_items
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goodsUrl != null" >
+        goods_url,
+      </if>
+      <if test="sid != null" >
+        sid,
+      </if>
+      <if test="categoryUrl != null" >
+        category_url,
+      </if>
+      <if test="goodsName != null" >
+        goods_name,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+      <if test="favorableRate != null" >
+        favorable_rate,
+      </if>
+      <if test="seller != null" >
+        seller,
+      </if>
+      <if test="dt != null" >
+        dt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goodsUrl != null" >
+        #{goodsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sid != null" >
+        #{sid,jdbcType=INTEGER},
+      </if>
+      <if test="categoryUrl != null" >
+        #{categoryUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsName != null" >
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=INTEGER},
+      </if>
+      <if test="favorableRate != null" >
+        #{favorableRate,jdbcType=DOUBLE},
+      </if>
+      <if test="seller != null" >
+        #{seller,jdbcType=VARCHAR},
+      </if>
+      <if test="dt != null" >
+        #{dt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bailian.model.YhdItems" >
+    update yhd_items
+    <set >
+      <if test="categoryUrl != null" >
+        category_url = #{categoryUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsName != null" >
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=INTEGER},
+      </if>
+      <if test="favorableRate != null" >
+        favorable_rate = #{favorableRate,jdbcType=DOUBLE},
+      </if>
+      <if test="seller != null" >
+        seller = #{seller,jdbcType=VARCHAR},
+      </if>
+      <if test="dt != null" >
+        dt = #{dt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where goods_url = #{goodsUrl,jdbcType=VARCHAR}
+      and sid = #{sid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bailian.model.YhdItems" >
+    update yhd_items
+    set category_url = #{categoryUrl,jdbcType=VARCHAR},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      comment = #{comment,jdbcType=INTEGER},
+      favorable_rate = #{favorableRate,jdbcType=DOUBLE},
+      seller = #{seller,jdbcType=VARCHAR},
+      dt = #{dt,jdbcType=TIMESTAMP}
+    where goods_url = #{goodsUrl,jdbcType=VARCHAR}
+      and sid = #{sid,jdbcType=INTEGER}
+  </update>
+
+  <select id="listPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select a.* from yhd_items a join bl_category_performance_basic b on
+    b.category_sid = #{categorySid,jdbcType=INTEGER} and
+    a.category_url = b.yhd_category_url
+    <if test="columnOrder != null">
+      ORDER BY ${columnOrder}
+    </if>
+  </select>
+</mapper>

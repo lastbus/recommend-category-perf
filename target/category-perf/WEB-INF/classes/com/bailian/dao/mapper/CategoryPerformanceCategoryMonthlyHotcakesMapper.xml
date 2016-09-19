@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bailian.dao.CategoryPerformanceCategoryMonthlyHotcakesMapper" >
+  <resultMap id="BaseResultMap" type="com.bailian.model.CategoryPerformanceCategoryMonthlyHotcakes" >
+    <result column="category_sid" property="categorySid" jdbcType="INTEGER" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="month" property="month" jdbcType="VARCHAR" />
+    <result column="rank" property="rank" jdbcType="INTEGER" />
+    <result column="goods_sid" property="goodsSid" jdbcType="VARCHAR" />
+    <result column="goods_sale_name" property="goodsSaleName" jdbcType="VARCHAR" />
+    <result column="goods_sale_price" property="goodsSalePrice" jdbcType="DOUBLE" />
+    <result column="sale_amount" property="saleAmount" jdbcType="INTEGER" />
+    <result column="cdate" property="cdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="com.bailian.model.CategoryPerformanceCategoryMonthlyHotcakes" >
+    insert into bl_category_performance_category_monthly_hotcakes (category_sid, category_name, month, 
+      rank, goods_sid, goods_sale_name, 
+      goods_sale_price, sale_amount, cdate
+      )
+    values (#{categorySid,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, 
+      #{rank,jdbcType=INTEGER}, #{goodsSid,jdbcType=VARCHAR}, #{goodsSaleName,jdbcType=VARCHAR}, 
+      #{goodsSalePrice,jdbcType=DOUBLE}, #{saleAmount,jdbcType=INTEGER}, #{cdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bailian.model.CategoryPerformanceCategoryMonthlyHotcakes" >
+    insert into bl_category_performance_category_monthly_hotcakes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="categorySid != null" >
+        category_sid,
+      </if>
+      <if test="categoryName != null" >
+        category_name,
+      </if>
+      <if test="month != null" >
+        month,
+      </if>
+      <if test="rank != null" >
+        rank,
+      </if>
+      <if test="goodsSid != null" >
+        goods_sid,
+      </if>
+      <if test="goodsSaleName != null" >
+        goods_sale_name,
+      </if>
+      <if test="goodsSalePrice != null" >
+        goods_sale_price,
+      </if>
+      <if test="saleAmount != null" >
+        sale_amount,
+      </if>
+      <if test="cdate != null" >
+        cdate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="categorySid != null" >
+        #{categorySid,jdbcType=INTEGER},
+      </if>
+      <if test="categoryName != null" >
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null" >
+        #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="rank != null" >
+        #{rank,jdbcType=INTEGER},
+      </if>
+      <if test="goodsSid != null" >
+        #{goodsSid,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsSaleName != null" >
+        #{goodsSaleName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsSalePrice != null" >
+        #{goodsSalePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="saleAmount != null" >
+        #{saleAmount,jdbcType=INTEGER},
+      </if>
+      <if test="cdate != null" >
+        #{cdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="listPageHotcakes" resultMap="BaseResultMap">
+    select * from bl_category_performance_category_monthly_hotcakes
+    <where>
+      <if test="categorySid != null" >
+        category_sid = #{categorySid,jdbcType=INTEGER}
+      </if>
+      <if test="month != null" >
+      AND  month = #{month,jdbcType=VARCHAR}
+      </if>
+    </where>
+    <if test="columnOrder != null">
+      ORDER BY ${columnOrder}
+    </if>
+  </select>
+
+  <select id="selectMonthByCategoryId" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select DISTINCT(month) from bl_category_performance_category_monthly_hotcakes
+    <where>
+      <if test="_parameter != null" >
+        category_sid = #{_parameter,jdbcType=INTEGER}
+      </if>
+    </where>
+    ORDER  BY month
+  </select>
+</mapper>
