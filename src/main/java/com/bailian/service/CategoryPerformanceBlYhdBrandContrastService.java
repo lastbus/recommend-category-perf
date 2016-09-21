@@ -12,4 +12,5 @@ import java.util.Map;
 public interface CategoryPerformanceBlYhdBrandContrastService {
     List<CategoryPerformanceBlYhdBrandContrast> listPage(Integer categoryId);
 
+    List<CategoryPerformanceBlYhdBrandContrast> selectByCategoryId(Integer categoryId);
 }

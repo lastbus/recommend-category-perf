@@ -455,7 +455,6 @@
                 data: {categorySid: $("#categoryId").val()},
                 dataType: "json",
                 success: function(result) {
-                    console.log(result);
                     $("#categoryBasicTable tr").eq(0).find("td").eq(0).html(result.categoryName);
                     $("#categoryBasicTable tr").eq(0).find("td").eq(1).html(parseFloat(result.totalGoodsNum).toLocaleString());
                     $("#categoryBasicTable tr").eq(0).find("td").eq(2).html(parseFloat(result.brandNum).toLocaleString());

@@ -59,4 +59,12 @@
       </if>
     </where>
   </select>
+  <select id="selectByCategoryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select DISTINCT* from bl_category_performance_bl_yhd_brand_contrast
+    <where>
+      <if test="_parameter != null">
+        category_sid = #{_parameter, jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
 </mapper>

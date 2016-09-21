@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bailian.model.*;
 import com.bailian.page.Page;
-import com.bailian.service.CategoryPerformanceCategoryPriceConfService;
-import com.bailian.service.CategoryPerformanceCategoryYhdPriceDistService;
-import com.bailian.service.YhdCategoryNewArrivalService;
-import com.bailian.service.YhdItemsService;
+import com.bailian.service.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +32,8 @@ public class CategoryAssistantController {
     private YhdItemsService yhdItemsService;
     @Resource
     private YhdCategoryNewArrivalService yhdCategoryNewArrivalService;
+    @Resource
+    private CategoryPerformanceBlYhdBrandContrastService categoryPerformanceBlYhdBrandContrastService;
 
     @RequestMapping("/categoryAssistant.html")
     public String categoryConfiguration() {
@@ -223,5 +222,17 @@ public class CategoryAssistantController {
         return result;
     }
 
+    @RequestMapping("/categoryYhdBrandChoose")
+    @ResponseBody
+    public String categoryYhdBrandChoose(@Param("categorySid") String categorySid) {
+        List<CategoryPerformanceBlYhdBrandContrast> list = this.categoryPerformanceBlYhdBrandContrastService.selectByCategoryId(Integer.parseInt(categorySid));
+        JSONArray jsonArray = new JSONArray();
+        JSONObject brands = new JSONObject();
+        for (int i = 0; i < list.size(); i++) {
+            jsonArray.add(list.get(i).getYhdBrand());
+        }
+        brands.put("brands", jsonArray);
+        return brands.toString();
+    }
 
 }

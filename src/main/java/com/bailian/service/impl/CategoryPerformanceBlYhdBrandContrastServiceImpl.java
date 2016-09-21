@@ -21,4 +21,9 @@ public class CategoryPerformanceBlYhdBrandContrastServiceImpl implements Categor
     public List<CategoryPerformanceBlYhdBrandContrast> listPage(Integer categoryId) {
         return this.categoryPerformanceBlYhdBrandContrastMapper.listPage(categoryId);
     }
+
+    @Override
+    public List<CategoryPerformanceBlYhdBrandContrast> selectByCategoryId(Integer categoryId) {
+        return this.categoryPerformanceBlYhdBrandContrastMapper.selectByCategoryId(categoryId);
+    }
 }

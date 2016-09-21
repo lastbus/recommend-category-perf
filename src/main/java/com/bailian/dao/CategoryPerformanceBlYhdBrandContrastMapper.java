@@ -12,4 +12,6 @@ public interface CategoryPerformanceBlYhdBrandContrastMapper {
 
     int insertSelective(CategoryPerformanceBlYhdBrandContrast record);
     List<CategoryPerformanceBlYhdBrandContrast> listPage(Integer categoryId);
+
+    List<CategoryPerformanceBlYhdBrandContrast> selectByCategoryId(Integer categoryId);
 }

@@ -95,12 +95,6 @@
                 <div class="form-horizontal" name="my-row" action="">
                     <div class="form-group">
                         <label class="col-md-1  control-label" style="text-align: left">引进条件</label>
-                        <div class="col-md-1 " style="width:100px;">
-                            <input type="text" id="minPrice"  class="form-control col-md-1" placeholder="最低价">
-                        </div>
-                        <div class="col-md-1" style="width:100px;">
-                            <input type="text" id="maxPrice" class="form-control col-md-1" placeholder="最高价">
-                        </div>
                         <div class="col-md-1 checkbox" style="margin:0;border:0;padding:0; margin: auto ; text-align: center">
                             <label class="control-label" >
                                 <input type="checkbox">新品
@@ -111,6 +105,20 @@
                                 <input type="checkbox">热销品
                             </label>
                         </div>
+                        <div class="col-md-1 " style="width:100px;">
+                            <input type="text" id="minPrice"  class="form-control col-md-1" placeholder="最低价">
+                        </div>
+                        <div class="col-md-1" style="width:100px;">
+                            <input type="text" id="maxPrice" class="form-control col-md-1" placeholder="最高价">
+                        </div>
+                        <div class="col-md-2 ">
+                            <div class="input-group">
+                                <input type="text" id="brands" class="form-control" placeholder="" disabled="disabled">
+                                <span class="input-group-btn">
+                                <button id="brandChoose" class="btn btn-outline" type="button">品牌</button>
+                            </span>
+                            </div>
+                        </div>
                         <div class="col-md-1">
                             <a href="javascript:;" id="queryBtn" class="btn green">
                                 <i class="glyphicon glyphicon-plus"></i>引进</a>
@@ -118,6 +126,16 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-12 form-horizontal" id="divBrandList">
+                <div class="well well-lg col-md-12" style="height: 150px;overflow:auto;margin:0; margin: auto ;" >
+                    <div class="form-group" id="brandList"></div>
+                </div>
+                <div class="well well-lg col-md-12" style="height:60px;text-align: center">
+                    <button class="btn dark btn-outline" id="brandSubmit" data-dismiss="modal" disabled="disabled">确定</button>
+                    <button class="btn dark btn-outline" id="brandCancel" data-dismiss="modal" aria-hidden="true">取消</button>
+                </div>
+            </div>
+
             <div class="col-md-12">
                 <hr style="border-top:1px solid #2dc0cd;" />
             </div>
@@ -432,7 +450,80 @@
                     tableCategoryYhdNewArrival();
                 }
             });
+            $("#divBrandList").hide();
+            $("#brandChoose").click(function() {
+                $("#divBrandList").toggle();
+                if ($("#divBrandList").is(":hidden")) {
+                } else {
+                    if ($("#brandList").html()=="") {
+                        $.ajax({
+                            type: 'post',
+                            url: '${basePath}/category/categoryYhdBrandChoose',
+                            data : {categorySid: $("#categoryId").val()},
+                            dataType : "json",
+                            success : function (result) {
+                                var brands = result.brands;
+                                if (brands != null && brands.length > 0) {
+                                    for (var i = 0; i < brands.length; i++) {
+                                        var divBrand = "<label class='control-label' style='width: 100px;text-align: left'><input type='checkbox' value= '" + brands[i] + "'> " + brands[i] + "</label>"
+                                        $("#brandList").prepend(divBrand);
+                                    }
+                                }
+
+                                $("#brandList input[type='checkbox']").click(function(){
+                                    if($(this).is(":checked")) {
+                                        $("#brandSubmit").removeAttr("disabled");
+                                    }
+                                });
+
+                                var brandLast = "";
+                                $("#brandSubmit").click(function (){
+                                    brandLast = "";
+                                    $("#brandList input[type='checkbox']:checked").each(function(){
+                                        if(this.checked){
+                                            if ($("#brandList input[type='checkbox']:checked:last").val() == $(this).val()) {
+                                                brandLast = brandLast +  $(this).val();
+                                            } else {
+                                                brandLast = brandLast +  $(this).val() + "、";
+                                            }
+                                        }
+                                    });
+                                    $("#brands").val(brandLast);
+                                    $("#divBrandList").hide();
+                                });
+
+                                $("#brandCancel").click(function(){
+                                    var brandLastArray = [];
+                                    brandLastArray = brandLast.split("、");
+                                    //取消的时候去掉选中的
+                                    $("#brandList input[type='checkbox']:checked").each(function(){
+                                        if(this.checked){
+                                            var result= $.inArray($(this).val(), brandLastArray);
+                                            if(result == -1) {
+                                                $(this).attr("checked", false);
+                                            }
+                                        }
+                                    });
+                                    //取消的时候选择去掉的
+                                    $("#brandList input[type='checkbox']").not("input:checked").each(function(){
+                                        var result= $.inArray($(this).val(), brandLastArray);
+                                        if(result != -1) {
+                                            console.log("当前：" + $(this).val())
+                                            console.log(brandLastArray);
+                                            $(this).prop("checked",true);
+                                        }
+                                    });
+                                    $("#divBrandList").hide();
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+
         };
+
         return {
             init: function () {
                 mychart_Yhdprice();
