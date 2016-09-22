@@ -508,8 +508,6 @@
                                     $("#brandList input[type='checkbox']").not("input:checked").each(function(){
                                         var result= $.inArray($(this).val(), brandLastArray);
                                         if(result != -1) {
-                                            console.log("当前：" + $(this).val())
-                                            console.log(brandLastArray);
                                             $(this).prop("checked",true);
                                         }
                                     });
