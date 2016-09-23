@@ -10,4 +10,7 @@ import java.util.Map;
  */
 public interface YhdCategoryNewArrivalService {
     List<YhdCategoryNewArrival> listPage(Map param);
+    List<YhdCategoryNewArrival> selectNewGoodsWithBrand(Map map);
+    List<Map> selectNewGoodsWithoutBrand(Map map);
+
 }

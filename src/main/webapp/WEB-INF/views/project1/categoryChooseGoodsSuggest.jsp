@@ -93,16 +93,16 @@
             </div>
             <div class="portlet-body col-md-12" >
                 <div class="form-horizontal" name="my-row" action="">
-                    <div class="form-group">
+                    <div class="form-group" id="divChooseGoods">
                         <label class="col-md-1  control-label" style="text-align: left">引进条件</label>
                         <div class="col-md-1 checkbox" style="margin:0;border:0;padding:0; margin: auto ; text-align: center">
                             <label class="control-label" >
-                                <input type="checkbox">新品
+                                <input type="checkbox" value="0">新品
                             </label>
                         </div>
                         <div class="col-md-1 checkbox">
                             <label class="control-label" >
-                                <input type="checkbox">热销品
+                                <input type="checkbox" value="1">热销品
                             </label>
                         </div>
                         <div class="col-md-1 " style="width:100px;">
@@ -120,8 +120,12 @@
                             </div>
                         </div>
                         <div class="col-md-1">
-                            <a href="javascript:;" id="queryBtn" class="btn green">
+                            <a href="javascript:;" id="importNewGoods" class="btn green">
                                 <i class="glyphicon glyphicon-plus"></i>引进</a>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="javascript:;" id="queryButton" class="btn green">
+                                <i class="glyphicon glyphicon-search"></i>查询</a>
                         </div>
                     </div>
                 </div>
@@ -134,6 +138,10 @@
                     <button class="btn dark btn-outline" id="brandSubmit" data-dismiss="modal" disabled="disabled">确定</button>
                     <button class="btn dark btn-outline" id="brandCancel" data-dismiss="modal" aria-hidden="true">取消</button>
                 </div>
+            </div>
+
+            <div class="col-md-12" >
+                <table class="table table-striped table-bordered table-hover" id="importGoodsTable"></table>
             </div>
 
             <div class="col-md-12">
@@ -411,6 +419,83 @@
             //根据表头排序
             $('#categoryYhdNewArrivalTable').on('sort.bs.table', function (e, name, order) {});
         };
+        var tableImportGoodsTable = function () {
+            var url = '${basePath}/category/categoryImportGoodsTable';
+            var option = {
+                url: url,  //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "desc",                   //排序方式
+                queryParams: function (params) {   ////传递参数（*）
+                    var p = {
+                        limit: params.limit,   //页面大小
+                        offset: params.offset,  //页码
+                        column: params.sort,
+                        order: params.order,
+                        categoryid: $("#categoryId").val()
+                    };
+                    return p;
+                },
+                queryParamsType: 'limit',
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,
+                showColumns: false,                  //是否显示所有的列
+                showRefresh: false,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                height: 450,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高
+                clickToSelect: false,                //是否启用点击选中行
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                showToggle: false,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示父子表
+                checkboxHeader: false,
+                columns: [{
+                    field: 'blGoodsCategory',
+                    title: '自有品类ID'
+                }, {
+                    field: 'blGoodsSid',
+                    title: '自有商品ID',
+                }, {
+                    field: 'blGoodsName',
+                    title: '自有商品名',
+                }, {
+                    field: 'blGoodsPrice',
+                    title: '自有价格',
+                    sortable:true
+                }, {
+                    field: 'yhdCategoryUrl',
+                    width: '20px',
+                    title: '一号店品类',
+                }, {
+                    field: 'yhdGoodsUrl',
+                    width: '20px',
+                    title: '一号店商品',
+                }, {
+                    field: 'yhdGoodsName',
+                    title: '一号店商品名',
+                },{
+                    field: 'yhdGoodsPrice',
+                    title: '一号店价格',
+                    sortable:true
+                }, {
+                    field: 'strYhdGoodsType',
+                    title: '类型',
+                    sortable:true
+                }]
+            };
+            $("#importGoodsTable").bootstrapTable(option);
+            //根据表头排序
+            $('#importGoodsTable').on('sort.bs.table', function (e, name, order) {});
+
+        };
         var clickBt = function(){
             $("#category-score").click(function() {
                 toMainPage("${basePath}/category/categoryAssistant.html");
@@ -469,7 +554,6 @@
                                         $("#brandList").prepend(divBrand);
                                     }
                                 }
-
                                 $("#brandList input[type='checkbox']").click(function(){
                                     if($(this).is(":checked")) {
                                         $("#brandSubmit").removeAttr("disabled");
@@ -518,12 +602,57 @@
                     }
                 }
             });
+            $('#maxPrice').keyup(function(){
+                var val = $(this).val();
+                if(val.length==1){
+                    $('#maxPrice').val(val.replace(/[^0-9]/g,''));
+                }else{
+                    $('#maxPrice').val(val.replace(/\D/g,''));
+                }
+            });
+            $('#minPrice').keyup(function(){
+                var val = $(this).val();
+                if(val.length==1){
+                    $('#minPrice').val(val.replace(/[^0-9]/g,''));
+                } else {
+                    $('#minPrice').val(val.replace(/\D/g,''));
+                }
+            });
 
-
+            $("#queryButton").click(function(){
+                $("#importGoodsTable").bootstrapTable("refresh");
+            });
+            $("#importNewGoods").click(function() {
+                var newGoods = "";
+                var hotGoods = "";
+                var maxPrice = $("#maxPrice").val();
+                var minPrice = $("#minPrice").val();
+                var brands = $("#brands").val();
+                $("#divChooseGoods input[type='checkbox']:checked").each(function(){
+                    if ($(this).val() == "0") {
+                        newGoods = "0";
+                    } else if ($(this).val() == "1") {
+                        hotGoods = "1";
+                    }
+                });
+                $.ajax({
+                    type: 'post',
+                    url: '${basePath}/category/categoryImportNewGoods',
+                    data: {categorySid: $("#categoryId").val(), newGoods: newGoods, hotGoods: hotGoods, maxPrice: maxPrice, minPrice: minPrice, brands: brands},
+                    dataType: 'json',
+                    success: function (result) {
+                        alert("总共引入商品记录" + result + "条");
+                        if (result != "0") {
+                            $("#importGoodsTable").bootstrapTable("refresh");
+                        }
+                    }
+                });
+            });
         };
 
         return {
             init: function () {
+                tableImportGoodsTable();
                 mychart_Yhdprice();
                 clickBt();
             }

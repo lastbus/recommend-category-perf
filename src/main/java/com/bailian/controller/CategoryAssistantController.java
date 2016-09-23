@@ -34,7 +34,8 @@ public class CategoryAssistantController {
     private YhdCategoryNewArrivalService yhdCategoryNewArrivalService;
     @Resource
     private CategoryPerformanceBlYhdBrandContrastService categoryPerformanceBlYhdBrandContrastService;
-
+    @Resource
+    private BlYhdItemsCompareService blYhdItemsCompareService;
     @RequestMapping("/categoryAssistant.html")
     public String categoryConfiguration() {
         return "project1/categoryAssistant";
@@ -233,6 +234,219 @@ public class CategoryAssistantController {
         }
         brands.put("brands", jsonArray);
         return brands.toString();
+    }
+
+    @RequestMapping("/categoryImportNewGoods")
+    @ResponseBody
+    public String categoryImportNewGoods(@Param("categorySid") String categorySid,
+                                         @Param("newGoods") String newGoods,
+                                         @Param("hotGoods") String hotGoods,
+                                         @Param("maxPrice") String maxPrice,
+                                         @Param("minPrice") String minPrice,
+                                         @Param("brands") String brands) {
+        List<BlYhdItemsCompare> blYhdItemsCompares = new ArrayList<>();
+        BlYhdItemsCompareKey key = new BlYhdItemsCompareKey();
+        String[] brandArray = {};
+        if (brands != "") {
+            brandArray = brands.split("、");
+        }
+        Map map = new HashMap();
+        map.put("categorySid", categorySid);
+        map.put("maxPrice", maxPrice);
+        map.put("minPrice", minPrice);
+        if ((newGoods == "" && hotGoods == "") || (newGoods != "" && hotGoods != "")) {
+            //全选或者全不选
+            if (brandArray.length == 0) {
+                //不选品牌，直接导入匹配表数据
+                List<Map> all0= yhdCategoryNewArrivalService.selectNewGoodsWithoutBrand(map);
+                for (int i = 0; i < all0.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setBlGoodsCategory(Integer.parseInt(all0.get(i).get("bl_goods_category").toString()));
+                    blYhdItemsCompare.setBlGoodsSid(Integer.parseInt(all0.get(i).get("bl_goods_sid").toString()));
+                    blYhdItemsCompare.setBlGoodsName(all0.get(i).get("bl_goods_name").toString());
+                    blYhdItemsCompare.setBlGoodsPrice(Double.parseDouble(all0.get(i).get("bl_sale_price").toString()));
+                    blYhdItemsCompare.setYhdCategoryUrl(all0.get(i).get("yhd_category_url").toString());
+                    blYhdItemsCompare.setYhdGoodsUrl(all0.get(i).get("yhd_goods_url").toString());
+                    blYhdItemsCompare.setYhdGoodsName(all0.get(i).get("yhd_goods_name").toString());
+                    blYhdItemsCompare.setYhdGoodsPrice(Double.parseDouble(all0.get(i).get("yhd_price").toString()));
+                    blYhdItemsCompare.setYhdGoodsType(0);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+
+                List<Map> all1= yhdItemsService.selectNewGoodsWithoutBrand(map);
+                for (int i = 0; i < all1.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setBlGoodsCategory(Integer.parseInt(all1.get(i).get("bl_goods_category").toString()));
+                    blYhdItemsCompare.setBlGoodsSid(Integer.parseInt(all1.get(i).get("bl_goods_sid").toString()));
+                    blYhdItemsCompare.setBlGoodsName(all1.get(i).get("bl_goods_name").toString());
+                    blYhdItemsCompare.setBlGoodsPrice(Double.parseDouble(all1.get(i).get("bl_sale_price").toString()));
+                    blYhdItemsCompare.setYhdCategoryUrl(all1.get(i).get("yhd_category_url").toString());
+                    blYhdItemsCompare.setYhdGoodsUrl(all1.get(i).get("yhd_goods_url").toString());
+                    blYhdItemsCompare.setYhdGoodsName(all1.get(i).get("yhd_goods_name").toString());
+                    blYhdItemsCompare.setYhdGoodsPrice(Double.parseDouble(all1.get(i).get("yhd_price").toString()));
+                    blYhdItemsCompare.setYhdGoodsType(1);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+            } else {
+                List<YhdCategoryNewArrival> list0 = new ArrayList<>();
+                //选品牌，
+                for (int i = 0; i < brandArray.length; i++) {
+                    map.put("brand", brandArray[i]);
+                    List<YhdCategoryNewArrival> tmp = this.yhdCategoryNewArrivalService.selectNewGoodsWithBrand(map);
+                    for (int j = 0; j < tmp.size(); j++) {
+                        list0.add(tmp.get(j));
+                    }
+                }
+                for (int i = 0; i < list0.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setYhdCategoryUrl(list0.get(i).getCategoryUrl());
+                    blYhdItemsCompare.setYhdGoodsUrl(list0.get(i).getGoodsUrl());
+                    blYhdItemsCompare.setYhdGoodsName(list0.get(i).getGoodsName());
+                    blYhdItemsCompare.setYhdGoodsPrice(list0.get(i).getPrice());
+                    blYhdItemsCompare.setYhdGoodsType(0);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+
+                List<YhdItems> list1 = new ArrayList<>();
+                //选品牌，根据品牌来匹配热搜表
+                for (int i = 0; i < brandArray.length; i++) {
+                    map.put("brand", brandArray[i]);
+                    List<YhdItems> tmp = this.yhdItemsService.selectNewGoodsWithBrand(map);
+                    for (int j = 0; j < tmp.size(); j++) {
+                        list1.add(tmp.get(j));
+                    }
+                }
+                for (int i = 0; i < list1.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setYhdCategoryUrl(list1.get(i).getCategoryUrl());
+                    blYhdItemsCompare.setYhdGoodsUrl(list1.get(i).getGoodsUrl());
+                    blYhdItemsCompare.setYhdGoodsName(list1.get(i).getGoodsName());
+                    blYhdItemsCompare.setYhdGoodsPrice(list1.get(i).getPrice());
+                    blYhdItemsCompare.setYhdGoodsType(1);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+            }
+        } else if (newGoods != "" && hotGoods == "") {
+            //只选新品
+            if (brandArray.length == 0) {
+                //不选品牌，直接导入匹配表数据
+                List<Map> all= yhdCategoryNewArrivalService.selectNewGoodsWithoutBrand(map);
+                for (int i = 0; i < all.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setBlGoodsCategory(Integer.parseInt(all.get(i).get("bl_goods_category").toString()));
+                    blYhdItemsCompare.setBlGoodsSid(Integer.parseInt(all.get(i).get("bl_goods_sid").toString()));
+                    blYhdItemsCompare.setBlGoodsName(all.get(i).get("bl_goods_name").toString());
+                    blYhdItemsCompare.setBlGoodsPrice(Double.parseDouble(all.get(i).get("bl_sale_price").toString()));
+                    blYhdItemsCompare.setYhdCategoryUrl(all.get(i).get("yhd_category_url").toString());
+                    blYhdItemsCompare.setYhdGoodsUrl(all.get(i).get("yhd_goods_url").toString());
+                    blYhdItemsCompare.setYhdGoodsName(all.get(i).get("yhd_goods_name").toString());
+                    blYhdItemsCompare.setYhdGoodsPrice(Double.parseDouble(all.get(i).get("yhd_price").toString()));
+                    blYhdItemsCompare.setYhdGoodsType(0);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+            } else {
+                List<YhdCategoryNewArrival> list = new ArrayList<>();
+                //选品牌，
+                for (int i = 0; i < brandArray.length; i++) {
+                    map.put("brand", brandArray[i]);
+                    List<YhdCategoryNewArrival> tmp = this.yhdCategoryNewArrivalService.selectNewGoodsWithBrand(map);
+                    for (int j = 0; j < tmp.size(); j++) {
+                        list.add(tmp.get(j));
+                    }
+                }
+                for (int i = 0; i < list.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setYhdCategoryUrl(list.get(i).getCategoryUrl());
+                    blYhdItemsCompare.setYhdGoodsUrl(list.get(i).getGoodsUrl());
+                    blYhdItemsCompare.setYhdGoodsName(list.get(i).getGoodsName());
+                    blYhdItemsCompare.setYhdGoodsPrice(list.get(i).getPrice());
+                    blYhdItemsCompare.setYhdGoodsType(0);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+            }
+
+        } else if (newGoods == "" && hotGoods != "") {
+            //选热销品和不选新品
+            if (brandArray.length == 0) {
+                //不选品牌，根据匹配表来管理
+                List<Map> all= yhdItemsService.selectNewGoodsWithoutBrand(map);
+                for (int i = 0; i < all.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setBlGoodsCategory(Integer.parseInt(all.get(i).get("bl_goods_category").toString()));
+                    blYhdItemsCompare.setBlGoodsSid(Integer.parseInt(all.get(i).get("bl_goods_sid").toString()));
+                    blYhdItemsCompare.setBlGoodsName(all.get(i).get("bl_goods_name").toString());
+                    blYhdItemsCompare.setBlGoodsPrice(Double.parseDouble(all.get(i).get("bl_sale_price").toString()));
+                    blYhdItemsCompare.setYhdCategoryUrl(all.get(i).get("yhd_category_url").toString());
+                    blYhdItemsCompare.setYhdGoodsUrl(all.get(i).get("yhd_goods_url").toString());
+                    blYhdItemsCompare.setYhdGoodsName(all.get(i).get("yhd_goods_name").toString());
+                    blYhdItemsCompare.setYhdGoodsPrice(Double.parseDouble(all.get(i).get("yhd_price").toString()));
+                    blYhdItemsCompare.setYhdGoodsType(1);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+            } else {
+                List<YhdItems> list = new ArrayList<>();
+                //选品牌，根据品牌来匹配热搜表
+                for (int i = 0; i < brandArray.length; i++) {
+                    map.put("brand", brandArray[i]);
+                    List<YhdItems> tmp = this.yhdItemsService.selectNewGoodsWithBrand(map);
+                    for (int j = 0; j < tmp.size(); j++) {
+                        list.add(tmp.get(j));
+                    }
+                }
+                for (int i = 0; i < list.size(); i++) {
+                    BlYhdItemsCompare blYhdItemsCompare= new BlYhdItemsCompare();
+                    blYhdItemsCompare.setYhdCategoryUrl(list.get(i).getCategoryUrl());
+                    blYhdItemsCompare.setYhdGoodsUrl(list.get(i).getGoodsUrl());
+                    blYhdItemsCompare.setYhdGoodsName(list.get(i).getGoodsName());
+                    blYhdItemsCompare.setYhdGoodsPrice(list.get(i).getPrice());
+                    blYhdItemsCompare.setYhdGoodsType(1);
+                    blYhdItemsCompares.add(blYhdItemsCompare);
+                }
+            }
+        }
+        int sum = 0;
+        if (!blYhdItemsCompares.isEmpty()) {
+            for (int i = 0; i < blYhdItemsCompares.size(); i++) {
+                //判断该记录是否存在于表中，存在则不再导入
+                key.setYhdCategoryUrl(blYhdItemsCompares.get(i).getYhdCategoryUrl());
+                key.setYhdGoodsUrl(blYhdItemsCompares.get(i).getYhdGoodsUrl());
+                BlYhdItemsCompare flag = this.blYhdItemsCompareService.selectByPrimaryKey(key);
+                if ("".equals(flag) || flag == null) {
+                    sum = sum  + 1;
+                    this.blYhdItemsCompareService.insert(blYhdItemsCompares.get(i));
+                }
+            }
+        }
+        return sum + "";
+    }
+
+    @RequestMapping("/categoryImportGoodsTable")
+    @ResponseBody
+    public String categoryImportGoodsTable(BootPage bootPage,
+                                   @Param("categoryid") String categoryid,
+                                   @Param("column") String column,
+                                   @Param("order") String order) {
+        Map param = new HashMap();
+        if (categoryid.matches("^\\d+$")&& categoryid != null && !categoryid.equals("")) {
+            param.put("categorySid", Integer.parseInt(categoryid));
+        }
+        if (column != null && !column.equals("") && order != null && !order.equals("")) {
+            if (column.equals("blGoodsPrice")) {
+                column = "bl_goods_price";
+            }
+            if (column.equals("yhdGoodsPrice")) {
+                column = "yhd_goods_price";
+            }
+            if (column.equals("yhdGoodsType")) {
+                column = "yhd_goods_type";
+            }
+            param.put("columnOrder", column + " " + order);
+        }
+        Page<BlYhdItemsCompare> page = Page.startPage(BlYhdItemsCompare.class, bootPage);
+        List<BlYhdItemsCompare> list = this.blYhdItemsCompareService.listPage(param);
+        bootPage.setPage(page);
+        String result = bootPage.printOut(list);
+        return result;
     }
 
 }

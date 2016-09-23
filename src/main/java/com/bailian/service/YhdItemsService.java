@@ -11,4 +11,7 @@ import java.util.Map;
 public interface YhdItemsService {
     List<YhdItems> listPage(Map map);
 
+    List<Map> selectNewGoodsWithoutBrand(Map map);
+
+    List<YhdItems> selectNewGoodsWithBrand(Map map);
 }

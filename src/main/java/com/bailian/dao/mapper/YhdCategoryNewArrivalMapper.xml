@@ -148,4 +148,34 @@
       ORDER BY ${columnOrder}
     </if>
   </select>
+
+  <select id="selectNewGoodsWithoutBrand" parameterType="java.util.Map" resultType="java.util.Map">
+    select DISTINCT e.*, f.sale_price bl_sale_price  from (select d.bl_goods_category, d.bl_goods_sid, d.bl_goods_name, d.yhd_category_url, d.yhd_goods_url,d.yhd_goods_name, c.price yhd_price
+    from (select b.* from bl_category_performance_basic a JOIN yhd_category_new_arrival b on a.category_sid =  #{categorySid,jdbcType=INTEGER} and a.yhd_category_url = b.category_url
+    <where>
+      <if test="minPrice != null and minPrice != ''">
+      and b.price >=  #{minPrice,jdbcType=DOUBLE}
+      </if>
+      <if test="maxPrice != null and maxPrice != ''">
+      and #{maxPrice,jdbcType=DOUBLE} >= b.price
+      </if>
+    </where>
+    )c join bl_yhd_items d on c.goods_url = d.yhd_goods_url) e join goods_avaialbe_for_sale_channel f on e.bl_goods_sid = f.sid
+  </select>
+  <select id="selectNewGoodsWithBrand" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select DISTINCT b.* from bl_category_performance_basic a JOIN yhd_category_new_arrival b on a.category_sid =  #{categorySid,jdbcType=INTEGER} and a.yhd_category_url = b.category_url
+    <where>
+      <if test="minPrice != null and minPrice != ''">
+      and b.price >=  #{minPrice,jdbcType=DOUBLE}
+      </if>
+      <if test="maxPrice != null and maxPrice != ''">
+      and #{maxPrice,jdbcType=DOUBLE} >= b.price
+      </if>
+      <if test="brand != null and brand != ''">
+      and goods_name LIKE CONCAT(CONCAT('%', #{brand,jdbcType=VARCHAR}), '%')
+      </if>
+    </where>
+    ORDER by comment desc limit 50;
+  </select>
+
 </mapper>

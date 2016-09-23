@@ -22,4 +22,7 @@ public interface YhdCategoryNewArrivalMapper {
     int updateByPrimaryKey(YhdCategoryNewArrival record);
 
     List<YhdCategoryNewArrival> listPage(Map param);
+
+    List<YhdCategoryNewArrival> selectNewGoodsWithBrand(Map map);
+    List<Map> selectNewGoodsWithoutBrand(Map map);
 }

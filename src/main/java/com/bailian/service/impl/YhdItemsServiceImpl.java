@@ -20,4 +20,14 @@ public class YhdItemsServiceImpl implements YhdItemsService {
     public List<YhdItems> listPage(Map map) {
         return this.yhdItemsMapper.listPage(map);
     }
+
+    @Override
+    public List<Map> selectNewGoodsWithoutBrand(Map map) {
+        return this.yhdItemsMapper.selectNewGoodsWithoutBrand(map);
+    }
+
+    @Override
+    public List<YhdItems> selectNewGoodsWithBrand(Map map) {
+        return this.yhdItemsMapper.selectNewGoodsWithBrand(map);
+    }
 }

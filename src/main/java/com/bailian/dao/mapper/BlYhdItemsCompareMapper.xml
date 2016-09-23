@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bailian.dao.BlYhdItemsCompareMapper" >
+  <resultMap id="BaseResultMap" type="com.bailian.model.BlYhdItemsCompare" >
+    <id column="yhd_goods_url" property="yhdGoodsUrl" jdbcType="VARCHAR" />
+    <id column="yhd_category_url" property="yhdCategoryUrl" jdbcType="VARCHAR" />
+    <result column="bl_goods_category" property="blGoodsCategory" jdbcType="INTEGER" />
+    <result column="bl_goods_sid" property="blGoodsSid" jdbcType="INTEGER" />
+    <result column="bl_goods_name" property="blGoodsName" jdbcType="VARCHAR" />
+    <result column="bl_goods_price" property="blGoodsPrice" jdbcType="DOUBLE" />
+    <result column="yhd_goods_name" property="yhdGoodsName" jdbcType="VARCHAR" />
+    <result column="yhd_goods_price" property="yhdGoodsPrice" jdbcType="DOUBLE" />
+    <result column="yhd_goods_type" property="yhdGoodsType" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    yhd_goods_url, yhd_category_url, bl_goods_category, bl_goods_sid, bl_goods_name, 
+    bl_goods_price, yhd_goods_name, yhd_goods_price, yhd_goods_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.bailian.model.BlYhdItemsCompareKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_yhd_items_compare
+    where yhd_goods_url = #{yhdGoodsUrl,jdbcType=VARCHAR}
+      and yhd_category_url = #{yhdCategoryUrl,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.bailian.model.BlYhdItemsCompareKey" >
+    delete from bl_yhd_items_compare
+    where yhd_goods_url = #{yhdGoodsUrl,jdbcType=VARCHAR}
+      and yhd_category_url = #{yhdCategoryUrl,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bailian.model.BlYhdItemsCompare" >
+    insert into bl_yhd_items_compare (yhd_goods_url, yhd_category_url, bl_goods_category, 
+      bl_goods_sid, bl_goods_name, bl_goods_price, 
+      yhd_goods_name, yhd_goods_price, yhd_goods_type
+      )
+    values (#{yhdGoodsUrl,jdbcType=VARCHAR}, #{yhdCategoryUrl,jdbcType=VARCHAR}, #{blGoodsCategory,jdbcType=INTEGER}, 
+      #{blGoodsSid,jdbcType=INTEGER}, #{blGoodsName,jdbcType=VARCHAR}, #{blGoodsPrice,jdbcType=DOUBLE}, 
+      #{yhdGoodsName,jdbcType=VARCHAR}, #{yhdGoodsPrice,jdbcType=DOUBLE}, #{yhdGoodsType,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bailian.model.BlYhdItemsCompare" >
+    insert into bl_yhd_items_compare
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="yhdGoodsUrl != null" >
+        yhd_goods_url,
+      </if>
+      <if test="yhdCategoryUrl != null" >
+        yhd_category_url,
+      </if>
+      <if test="blGoodsCategory != null" >
+        bl_goods_category,
+      </if>
+      <if test="blGoodsSid != null" >
+        bl_goods_sid,
+      </if>
+      <if test="blGoodsName != null" >
+        bl_goods_name,
+      </if>
+      <if test="blGoodsPrice != null" >
+        bl_goods_price,
+      </if>
+      <if test="yhdGoodsName != null" >
+        yhd_goods_name,
+      </if>
+      <if test="yhdGoodsPrice != null" >
+        yhd_goods_price,
+      </if>
+      <if test="yhdGoodsType != null" >
+        yhd_goods_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="yhdGoodsUrl != null" >
+        #{yhdGoodsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="yhdCategoryUrl != null" >
+        #{yhdCategoryUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="blGoodsCategory != null" >
+        #{blGoodsCategory,jdbcType=INTEGER},
+      </if>
+      <if test="blGoodsSid != null" >
+        #{blGoodsSid,jdbcType=INTEGER},
+      </if>
+      <if test="blGoodsName != null" >
+        #{blGoodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="blGoodsPrice != null" >
+        #{blGoodsPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="yhdGoodsName != null" >
+        #{yhdGoodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="yhdGoodsPrice != null" >
+        #{yhdGoodsPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="yhdGoodsType != null" >
+        #{yhdGoodsType,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bailian.model.BlYhdItemsCompare" >
+    update bl_yhd_items_compare
+    <set >
+      <if test="blGoodsCategory != null" >
+        bl_goods_category = #{blGoodsCategory,jdbcType=INTEGER},
+      </if>
+      <if test="blGoodsSid != null" >
+        bl_goods_sid = #{blGoodsSid,jdbcType=INTEGER},
+      </if>
+      <if test="blGoodsName != null" >
+        bl_goods_name = #{blGoodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="blGoodsPrice != null" >
+        bl_goods_price = #{blGoodsPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="yhdGoodsName != null" >
+        yhd_goods_name = #{yhdGoodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="yhdGoodsPrice != null" >
+        yhd_goods_price = #{yhdGoodsPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="yhdGoodsType != null" >
+        yhd_goods_type = #{yhdGoodsType,jdbcType=INTEGER},
+      </if>
+    </set>
+    where yhd_goods_url = #{yhdGoodsUrl,jdbcType=VARCHAR}
+      and yhd_category_url = #{yhdCategoryUrl,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bailian.model.BlYhdItemsCompare" >
+    update bl_yhd_items_compare
+    set bl_goods_category = #{blGoodsCategory,jdbcType=INTEGER},
+      bl_goods_sid = #{blGoodsSid,jdbcType=INTEGER},
+      bl_goods_name = #{blGoodsName,jdbcType=VARCHAR},
+      bl_goods_price = #{blGoodsPrice,jdbcType=DOUBLE},
+      yhd_goods_name = #{yhdGoodsName,jdbcType=VARCHAR},
+      yhd_goods_price = #{yhdGoodsPrice,jdbcType=DOUBLE},
+      yhd_goods_type = #{yhdGoodsType,jdbcType=INTEGER}
+    where yhd_goods_url = #{yhdGoodsUrl,jdbcType=VARCHAR}
+      and yhd_category_url = #{yhdCategoryUrl,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insertList" parameterType="java.util.List">
+    insert into bl_yhd_items_compare (yhd_goods_url, yhd_category_url, bl_goods_category,
+      bl_goods_sid, bl_goods_name, bl_goods_price,
+      yhd_goods_name, yhd_goods_price, yhd_goods_type
+      )
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.yhdGoodsUrl,jdbcType=VARCHAR}, #{item.yhdCategoryUrl,jdbcType=VARCHAR}, #{item.blGoodsCategory,jdbcType=INTEGER},
+      #{item.blGoodsSid,jdbcType=INTEGER},#{item.blGoodsName,jdbcType=VARCHAR}, #{item.blGoodsPrice,jdbcType=DOUBLE},
+      #{item.yhdGoodsName,jdbcType=VARCHAR}, #{item.yhdGoodsPrice,jdbcType=DOUBLE}, #{item.yhdGoodsType,jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+
+  <select id="listPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select a.* from bl_yhd_items_compare a join bl_category_performance_basic b
+    <if test="categorySid != null" >
+      on b.category_sid = #{categorySid,jdbcType=INTEGER}
+    </if>
+    and a.yhd_category_url = b.yhd_category_url
+    <if test="columnOrder != null">
+      ORDER BY ${columnOrder}
+    </if>
+  </select>
+</mapper>

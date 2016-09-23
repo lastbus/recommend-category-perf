@@ -20,4 +20,13 @@ public class YhdCategoryNewArrivalServiceImpl implements YhdCategoryNewArrivalSe
     public List<YhdCategoryNewArrival> listPage(Map param) {
         return this.yhdCategoryNewArrivalMapper.listPage(param);
     }
+
+    @Override
+    public List<YhdCategoryNewArrival> selectNewGoodsWithBrand(Map map) {
+        return this.yhdCategoryNewArrivalMapper.selectNewGoodsWithBrand(map);
+    }
+    @Override
+    public List<Map> selectNewGoodsWithoutBrand(Map map) {
+        return this.yhdCategoryNewArrivalMapper.selectNewGoodsWithoutBrand(map);
+    }
 }
