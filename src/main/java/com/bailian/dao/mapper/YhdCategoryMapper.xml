@@ -139,7 +139,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByUrl" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-    select DISTINCT(a.url) url,  a.category_name, a.goodsNum, a.max_price, a.min_price ,a.brandsNum, a.brands, a.price_histgram from YHD_CATEGORY a
+    select DISTINCT(a.url) url,  a.category_name, a.goodsNum, a.max_price, a.min_price ,a.brandsNum, a.price_histgram from YHD_CATEGORY a
 join bl_category_performance_basic b on b.category_sid =  #{_parameter,jdbcType=INTEGER} and a.url = b.yhd_category_url
   </select>
   <select id="getCategory"  resultType="java.lang.String">
