@@ -14,6 +14,8 @@ public interface BlYhdItemsCompareService {
     BlYhdItemsCompare selectByPrimaryKey(BlYhdItemsCompareKey key);
     int insert(BlYhdItemsCompare record);
     List<BlYhdItemsCompare> listPage(Map map);
+    int deleteByPrimaryKey(BlYhdItemsCompareKey key);
+
 
 
 

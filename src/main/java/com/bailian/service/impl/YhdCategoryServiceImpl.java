@@ -23,12 +23,12 @@ public class YhdCategoryServiceImpl implements YhdCategoryService{
     }
 
     @Override
-    public List<YhdCategory> getCategory() {
+    public List<String> getCategory() {
         return this.yhdCategoryMapper.getCategory();
     }
 
     @Override
-    public YhdCategory selectUrl(String yhdCategory) {
+    public String selectUrl(String yhdCategory) {
         return this.yhdCategoryMapper.selectUrl(yhdCategory);
     }
 }

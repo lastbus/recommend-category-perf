@@ -34,6 +34,12 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="${basePath}/category/categoryMapping.html"  class="nav-link" >
+								<i class="fa fa-table"></i>
+								<span class="title">品类映射</span>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="${basePath}/category/categoryConfiguration.html"  class="nav-link" >
 								<i class="fa fa-table"></i>
 								<span class="title">品类配置</span>

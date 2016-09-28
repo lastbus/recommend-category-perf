@@ -18,4 +18,6 @@ public interface CategoryPerformanceBasicService {
     CategoryPerformanceBasic selectCategoryTree(Integer categorySid);
 
     void updateByPrimaryKeySelective(CategoryPerformanceBasic categoryPerformanceBasic);
+    List<CategoryPerformanceBasic> listPage(Map map);
+
 }

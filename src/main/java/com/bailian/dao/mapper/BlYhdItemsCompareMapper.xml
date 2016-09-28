@@ -160,6 +160,9 @@
       on b.category_sid = #{categorySid,jdbcType=INTEGER}
     </if>
     and a.yhd_category_url = b.yhd_category_url
+    <if test="goodsId != null">
+      and a.bl_goods_sid = #{goodsId,jdbcType=INTEGER}
+    </if>
     <if test="columnOrder != null">
       ORDER BY ${columnOrder}
     </if>

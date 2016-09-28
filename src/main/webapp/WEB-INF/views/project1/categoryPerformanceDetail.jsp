@@ -9,9 +9,9 @@
     <link href="${basePath}/assets/plugins/bootstrap-table/css/bootstrap-table.min.css" rel="stylesheet" type="text/css"/>
     <link href="${basePath}/assets/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
     <link href="${basePath}/assets/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-    <link href="${basePath}/assets/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" /></head>
+    <link href="${basePath}/assets/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${basePath}/assets/plugins/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"  type="text/css"/>
-
+</head>
 <body>
 
 <input type="hidden" id="categoryId" value="${categoryId}">
@@ -418,6 +418,18 @@
         <div class="modal-content " style="height:520px; width: 500px; text-align: center;" >
             <div class="modal-header">
                 <h4 class="modal-title">类目列表</h4>
+                <div class="form-group">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" id="keyword" class="form-control" placeholder="品类Id">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="javascript:;" id="search" class="btn green">
+                            <i class="glyphicon glyphicon-search"></i>查询</a>
+                    </div>
+                </div>
+                <hr style="border-top:0px ;" />
             </div>
             <div class="modal-body" style="height:400px;">
                 <form class="form-horizontal category-list-form" name="category-list-form" action="">
@@ -429,7 +441,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn green" id="categoryYhdSubmit" data-dismiss="modal">确定</button>
+                <button class="btn green" id="categoryYhdConfirm" data-dismiss="modal">确定</button>
                 <button class="btn dark btn-outline" id="categoryYhdCancel" data-dismiss="modal" aria-hidden="true">取消</button>
             </div>
         </div>
@@ -1322,74 +1334,104 @@
             myChart.setOption(option);
         };
 
-        var setting = {
-            check: {
-                enable: true,
-                chkStyle: "radio",
-                radioType: "all"
-            },
-            async: {
-                enable: true,
-                url:"${basePath}/category/getYhdCategoryTree",
-                autoParam: ["id"],
-                otherParam:{"categoryId":$("#categoryId").val()},
-                dataFilter : filter,
-            },
-            data:{ // 必须使用data
-                simpleData : {
-                    enable : true,
-                    idKey : "id", // id编号命名
-                    rootId : 0
+        var categoryYhdTree = function () {
+            var setting = {
+                check: {
+                    enable: true,
+                    chkStyle: "radio",
+                    radioType: "all"
+                },
+                async: {
+                    enable: true,
+                    url:"${basePath}/category/getYhdCategoryTree",
+                    autoParam: ["id"],
+                    otherParam:{"categoryId":$("#categoryId").val()},
+                    dataFilter : filter,
+                },
+                data:{ // 必须使用data
+                    simpleData : {
+                        enable : true,
+                        idKey : "id", // id编号命名
+                        rootId : 0
+                    }
+                },
+                callback: {
+                    onCheck: onCheck,
+                    beforeClick: beforeClick,
                 }
-            },
-            callback: {
-                onCheck: onCheck,
-                beforeClick: beforeClick,
+            };
+            var zNodes = [];
+            function filter(treeId, parentNode, childNodes) {
+                if (!childNodes)
+                    return null;
+                childNodes = eval(childNodes);
+                return childNodes;
             }
-        };
-        var zNodes = [];
-        function filter(treeId, parentNode, childNodes) {
-            if (!childNodes)
-                return null;
-            childNodes = eval(childNodes);
-            return childNodes;
-        }
-        function beforeClick(treeId,treeNode) {
-            var zTree = $.fn.zTree.getZTreeObj("categoryTree");
-            zTree.checkNode(treeNode, !treeNode.checked, null, true);
-            return false;
-        }
-        function onCheck(e, treeId, treeNode) {
-            // alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
-            var zTree = $.fn.zTree.getZTreeObj("categoryTree"),
-                    nodes = zTree.getCheckedNodes(true),
-                    v = "";
-            var ids="";
-            for (var i=0, l=nodes.length; i<l; i++) {
-                v += nodes[i].name + ",";
-                ids+=nodes[i].id+",";
+            function beforeClick(treeId,treeNode) {
+                var zTree = $.fn.zTree.getZTreeObj("categoryTree");
+                zTree.checkNode(treeNode, !treeNode.checked, null, true);
+                return false;
             }
-            if (ids.length > 0 ) ids = ids.substring(0, ids.length-1);
-            //  alert(ids);
-            if (v.length > 0 ) v = v.substring(0, v.length-1);
-            //var category = $("#categoryid");
-            //category.attr("value", v);
-            $("#yhdCategory").text(v);
+            function onCheck(e, treeId, treeNode) {
+                // alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
+                var zTree = $.fn.zTree.getZTreeObj("categoryTree"),
+                        nodes = zTree.getCheckedNodes(true),
+                        v = "";
+                var ids="";
+                for (var i=0, l=nodes.length; i<l; i++) {
+                    v += nodes[i].name + ",";
+                    ids+=nodes[i].id+",";
+                }
+                if (ids.length > 0 ) ids = ids.substring(0, ids.length-1);
+                //  alert(ids);
+                if (v.length > 0 ) v = v.substring(0, v.length-1);
+                //var category = $("#categoryid");
+                //category.attr("value", v);
+                $("#categoryYhdConfirm").click(function () {
+                    $("#yhdCategory").text(v);
+                    //更新URL
+                    $.ajax({
+                        type: 'post',
+                        async: true,
+                        url: "${basePath}/category/updateYhdUrl",
+                        data: {yhdCategoryTree: v},
+                        dataType: "json",
+                        success: function(result) {
+                            $("#Yhdurl").text(result);
+                            $("#Yhdurl").attr("href", result);
+                        }
+                    });
+                   //更新数据库
+                    $.ajax({
+                        type: 'post',
+                        async: true,
+                        url: "${basePath}/category/updateCategoryBasic",
+                        data: {categorySid: $("#categoryId").val(), yhdCategoryTree: v},
+                        dataType: "json",
+                        success: function(result) {
+                           alert("修改成功!");
+                        }
+                    });
 
-        }
-        function showMenu() {
-            $("#menuContent").slideDown("fast");
-            $("body").bind("mousedown", onBodyDown);
-        }
-        function hideMenu() {
-            $("#menuContent").fadeOut("fast");
-            $("body").unbind("mousedown", onBodyDown);
-        }
-        function onBodyDown(event) {
-            /*  if (!(event.target.id == "queryCategory" || event.target.id == "categoryid" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
-             hideMenu();
-             }*/
-        }
+                });
+            }
+            function showMenu() {
+                $("#menuContent").slideDown("fast");
+                $("body").bind("mousedown", onBodyDown);
+            }
+            function hideMenu() {
+                $("#menuContent").fadeOut("fast");
+                $("body").unbind("mousedown", onBodyDown);
+            }
+            function onBodyDown(event) {
+                /*  if (!(event.target.id == "queryCategory" || event.target.id == "categoryid" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+                 hideMenu();
+                 }*/
+            }
+            hideMenu()
+            showMenu();
+            $.fn.zTree.init($("#categoryTree"), setting, zNodes);
+        };
 
         var clickBt = function(){
             $("#category-score").click(function() {
@@ -1454,49 +1496,8 @@
                 toMainPage("${basePath}/category/categoryHotcakeCompare.html", data);
             });
             //重新匹配功能暂未开启
-            /*$("#reMatch").click(function() {
+           $("#reMatch").click(function() {
                 $("#match-search-Modal").modal("show");
-                showMenu();
-                $.fn.zTree.init($("#categoryTree"), setting, zNodes);
-            });*/
-            $("#categoryYhdSubmit").click(function() {
-                //更新页面
-                $.ajax({
-                    type: 'post',
-                    async: true,
-                    url: "${basePath}/category/updateYhdUrl",
-                    data: {yhdCategory: $("#yhdCategory").val()},
-                    dataType: "json",
-                    success: function(result) {
-                        $("#Yhdurl").text(result.url);
-                        $("#Yhdurl").attr("href", result.url);
-                    }
-                });
-                //更新数据库
-                $.ajax({
-                    type: 'post',
-                    async: true,
-                    url: "${basePath}/category/updateCategoryBasic",
-                    data: {categoryid: $("#categoryId").val(), yhdCategory: $("#yhdCategory").val()},
-                    dataType: "json",
-                    success: function(result) {
-                        $("#yhdCategory").text($("#yhdCategory").val());
-                    }
-                });
-            });
-            $("#categoryYhdCancel").click(function() {
-                $.ajax({
-                    type: 'post',
-                    async: true,
-                    url: "${basePath}/category/categoryBasic",
-                    data: {categorySid: $("#categoryId").val()},
-                    dataType: "json",
-                    success: function(result) {
-                        $("#categoryBasicTable tr").eq(3).find("td").eq(0).html(result.yhdCategoryTree);
-                        $("#Yhdurl").text(result.yhdCategoryUrl);
-                        $("#Yhdurl").attr("href", result.yhdCategoryUrl);
-                    }
-                });
             });
         };
         var insertTable = function() {
@@ -1581,6 +1582,7 @@
                 mychart_sale_concentration_ratio();
                 mychart_price();
                 mychart_pv_uv();
+                categoryYhdTree();
                 clickBt();
                 insertTable();
             }

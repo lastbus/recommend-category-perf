@@ -163,16 +163,20 @@
   </update>
 
   <select id="listPageScore" resultMap="BaseResultMap">
-    select * from bl_category_performance_score
+    select a.* from bl_category_performance_score a
+    join bl_category_performance_basic b on a.category_sid = b.category_sid
+    <if test="level == 0">
+      and b.isleaf = 1
+    </if>
     <where>
       <if test="categorySid != null" >
-        category_sid = #{categorySid,jdbcType=INTEGER}
+        a.category_sid = #{categorySid,jdbcType=INTEGER}
       </if>
-      <if test="level != null">
-        AND level = #{level, jdbcType=INTEGER}
+      <if test="level != null and level !=0">
+        AND a.level = #{level, jdbcType=INTEGER}
       </if>
       <if test="parentSid != null">
-        AND parent_sid = #{parentSid,jdbcType=INTEGER}
+        AND a.parent_sid = #{parentSid,jdbcType=INTEGER}
       </if>
     </where>
     <if test="columnOrder != null">

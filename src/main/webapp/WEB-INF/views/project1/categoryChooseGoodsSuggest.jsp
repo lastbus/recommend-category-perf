@@ -123,10 +123,6 @@
                             <a href="javascript:;" id="importNewGoods" class="btn green">
                                 <i class="glyphicon glyphicon-plus"></i>引进</a>
                         </div>
-                        <div class="col-md-1">
-                            <a href="javascript:;" id="queryButton" class="btn green">
-                                <i class="glyphicon glyphicon-search"></i>查询</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -139,7 +135,20 @@
                     <button class="btn dark btn-outline" id="brandCancel" data-dismiss="modal" aria-hidden="true">取消</button>
                 </div>
             </div>
-
+            <div class="portlet-body col-md-12" >
+                <div class="form-horizontal" name="my-row" action="">
+                    <div class="form-group">
+                        <label class="col-md-1  control-label" style="text-align: left">自有商品</label>
+                        <div class="col-md-2 ">
+                            <input type="text" id="goodsId"  class="form-control" placeholder="自有商品ID">
+                        </div>
+                        <div class="col-md-1">
+                            <a href="javascript:;" id="queryButton" class="btn green">
+                                <i class="glyphicon glyphicon-search"></i>查询</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12" >
                 <table class="table table-striped table-bordered table-hover" id="importGoodsTable"></table>
             </div>
@@ -436,7 +445,8 @@
                         offset: params.offset,  //页码
                         column: params.sort,
                         order: params.order,
-                        categoryid: $("#categoryId").val()
+                        categoryid: $("#categoryId").val(),
+                        goodsId: $("#goodsId").val()
                     };
                     return p;
                 },
@@ -450,7 +460,7 @@
                 showColumns: false,                  //是否显示所有的列
                 showRefresh: false,                  //是否显示刷新按钮
                 minimumCountColumns: 2,             //最少允许的列数
-                height: 450,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高
+                height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高
                 clickToSelect: false,                //是否启用点击选中行
                 uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
                 showToggle: false,                    //是否显示详细视图和列表视图的切换按钮
@@ -471,14 +481,6 @@
                     title: '自有价格',
                     sortable:true
                 }, {
-                    field: 'yhdCategoryUrl',
-                    width: '20px',
-                    title: '一号店品类',
-                }, {
-                    field: 'yhdGoodsUrl',
-                    width: '20px',
-                    title: '一号店商品',
-                }, {
                     field: 'yhdGoodsName',
                     title: '一号店商品名',
                 },{
@@ -489,6 +491,63 @@
                     field: 'strYhdGoodsType',
                     title: '类型',
                     sortable:true
+                }, {
+                    field: 'CategoryUrl',
+                    width: '20px',
+                    title: '一号店品类',
+                    align: 'center',
+                    events: {
+                        'click .getYhdCategoryUrl': function (e, value, row, index) {
+                          //alert('重新发送该邀请, row: ' + JSON.stringify(row));
+                            window.open(row.yhdCategoryUrl)
+                        }
+                    },
+                    formatter: function() {
+                        var operate =
+                                '<a class="getYhdCategoryUrl" title="查看"><span class="glyphicon glyphicon-search"/></a>'
+                        return operate;
+                    }
+                }, {
+                    width: '20px',
+                    title: '一号店商品',
+                    align: 'center',
+                    events: {
+                        'click .getYhdGoodsUrl': function (e, value, row, index) {
+                           // alert('重新发送该邀请, row: ' + JSON.stringify(row));
+                            window.open(row.yhdGoodsUrl);
+                        }
+                    },
+                    formatter: function() {
+                        var operate =
+                                '<a class="getYhdGoodsUrl" title="查看"><span class="glyphicon glyphicon-search"/></a>'
+                        return operate;
+                    },
+                }, {
+                    width: '20px',
+                    title: '删除',
+                    align: 'center',
+                    events: {
+                        'click .delete': function (e, value, row, index) {
+                           //alert('重新发送该邀请, row: ' + JSON.stringify(row));
+                            var data = {
+                                yhdCategoryUrl: row.yhdCategoryUrl,
+                                yhdGoodsUrl: row.yhdGoodsUrl
+                            }
+                            if (confirm("你真的确定要删除吗?")) {
+                                $.post("${basePath}/category/deleteBlYhdGoodsCompare", data, function (jsonResult) {
+                                    if(jsonResult) {
+                                        $("#importGoodsTable").bootstrapTable("refresh");
+                                    }
+                                });
+                            }
+
+                        }
+                    },
+                    formatter: function() {
+                        var operate =
+                                '<a class="delete" title="删除"><span class="glyphicon glyphicon-trash"/></a>'
+                        return operate;
+                    },
                 }]
             };
             $("#importGoodsTable").bootstrapTable(option);
@@ -616,6 +675,14 @@
                     $('#minPrice').val(val.replace(/[^0-9]/g,''));
                 } else {
                     $('#minPrice').val(val.replace(/\D/g,''));
+                }
+            });
+            $('#goodsId').keyup(function(){
+                var val = $(this).val();
+                if(val.length==1){
+                    $('#goodsId').val(val.replace(/[^0-9]/g,''));
+                } else {
+                    $('#goodsId').val(val.replace(/\D/g,''));
                 }
             });
 

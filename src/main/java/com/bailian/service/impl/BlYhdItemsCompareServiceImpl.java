@@ -37,4 +37,9 @@ public class BlYhdItemsCompareServiceImpl implements BlYhdItemsCompareService {
     public List<BlYhdItemsCompare> listPage(Map map) {
         return this.blYhdItemsCompareMapper.listPage(map);
     }
+
+    @Override
+    public int deleteByPrimaryKey(BlYhdItemsCompareKey key) {
+        return this.blYhdItemsCompareMapper.deleteByPrimaryKey(key);
+    }
 }

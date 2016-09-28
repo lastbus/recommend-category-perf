@@ -2,7 +2,7 @@ package com.bailian.model;
 
 import java.util.Date;
 
-public class CategoryPerformanceBasic {
+public class CategoryPerformanceBasic  extends CategoryYhdBrand{
     private Integer categorySid;
 
     private String categoryName;
@@ -29,7 +29,22 @@ public class CategoryPerformanceBasic {
 
     private String yhdCategoryUrl;
 
+    private Integer matchType;
+
+    private Integer isleaf;
+
     private Date cdate;
+    private String blCategoryTree;
+
+    public String getBlCategoryTree() {
+        blCategoryTree = getCategoryTree() + ">" + getCategoryName() + ">";
+        return blCategoryTree;
+    }
+
+    public void setBlCategoryTree(String blCategoryTree) {
+        this.blCategoryTree = blCategoryTree;
+    }
+
 
     public Integer getCategorySid() {
         return categorySid;
@@ -133,6 +148,22 @@ public class CategoryPerformanceBasic {
 
     public void setYhdCategoryUrl(String yhdCategoryUrl) {
         this.yhdCategoryUrl = yhdCategoryUrl == null ? null : yhdCategoryUrl.trim();
+    }
+
+    public Integer getMatchType() {
+        return matchType;
+    }
+
+    public void setMatchType(Integer matchType) {
+        this.matchType = matchType;
+    }
+
+    public Integer getIsleaf() {
+        return isleaf;
+    }
+
+    public void setIsleaf(Integer isleaf) {
+        this.isleaf = isleaf;
     }
 
     public Date getCdate() {

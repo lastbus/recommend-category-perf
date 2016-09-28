@@ -41,4 +41,9 @@ public class CategoryPerformanceBasicServiceImpl implements CategoryPerformanceB
     public void updateByPrimaryKeySelective(CategoryPerformanceBasic categoryPerformanceBasic) {
         this.categoryPerformanceBasicMapper.updateByPrimaryKeySelective(categoryPerformanceBasic);
     }
+
+    @Override
+    public List<CategoryPerformanceBasic> listPage(Map map) {
+        return this.categoryPerformanceBasicMapper.listPage(map);
+    }
 }

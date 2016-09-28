@@ -21,7 +21,7 @@ public interface YhdCategoryMapper {
     int updateByPrimaryKey(YhdCategory record);
     YhdCategory selectByUrl(Integer categoryId);
 
-    List<YhdCategory> getCategory();
+    List<String> getCategory();
 
-    YhdCategory selectUrl(String yhdCategory);
+    String selectUrl(String yhdCategory);
 }

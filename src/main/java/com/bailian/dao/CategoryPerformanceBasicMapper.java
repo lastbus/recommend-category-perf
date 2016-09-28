@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-
 @Repository
 public interface CategoryPerformanceBasicMapper {
     int deleteByPrimaryKey(Integer categorySid);
@@ -25,4 +24,5 @@ public interface CategoryPerformanceBasicMapper {
     Map selectIndexBasic();
 
     CategoryPerformanceBasic selectCategoryTree(Integer categorySid);
+    List<CategoryPerformanceBasic> listPage(Map map);
 }

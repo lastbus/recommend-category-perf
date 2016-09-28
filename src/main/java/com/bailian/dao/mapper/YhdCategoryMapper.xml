@@ -142,11 +142,11 @@
     select DISTINCT(a.url) url,  a.category_name, a.goodsNum, a.max_price, a.min_price ,a.brandsNum, a.brands, a.price_histgram from YHD_CATEGORY a
 join bl_category_performance_basic b on b.category_sid =  #{_parameter,jdbcType=INTEGER} and a.url = b.yhd_category_url
   </select>
-  <select id="getCategory"  resultMap="BaseResultMap">
-    select * from YHD_CATEGORY
+  <select id="getCategory"  resultType="java.lang.String">
+    select DISTINCT category_name from YHD_CATEGORY
   </select>
-  <select id="selectUrl"  resultMap="BaseResultMap" parameterType="java.lang.String">
-    select * from YHD_CATEGORY
+  <select id="selectUrl"  resultType="java.lang.String" parameterType="java.lang.String">
+    select DISTINCT url from YHD_CATEGORY
     <where>
       <if test="_parameter != null">
         category_name = #{_parameter,jdbcType=VARCHAR}

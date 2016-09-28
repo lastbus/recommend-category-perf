@@ -15,15 +15,19 @@
     <result column="highest_price" property="highestPrice" jdbcType="DOUBLE" />
     <result column="yhd_category_tree" property="yhdCategoryTree" jdbcType="VARCHAR" />
     <result column="yhd_category_url" property="yhdCategoryUrl" jdbcType="VARCHAR" />
+    <result column="match_type" property="matchType" jdbcType="INTEGER" />
+    <result column="isleaf" property="isleaf" jdbcType="INTEGER" />
     <result column="cdate" property="cdate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     category_sid, category_name, level, parent_sid, category_tree, total_goods_num, off_the_shelf_goods_num, 
     out_of_stock_goods_num, brand_num, lowest_price, highest_price, yhd_category_tree, 
-    yhd_category_url, cdate
+    yhd_category_url, match_type, isleaf, cdate
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select * from bl_category_performance_basic
+    select 
+    <include refid="Base_Column_List" />
+    from bl_category_performance_basic
     where category_sid = #{categorySid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -35,14 +39,14 @@
       parent_sid, category_tree, total_goods_num, 
       off_the_shelf_goods_num, out_of_stock_goods_num, 
       brand_num, lowest_price, highest_price, 
-      yhd_category_tree, yhd_category_url, cdate
-      )
+      yhd_category_tree, yhd_category_url, match_type, 
+      isleaf, cdate)
     values (#{categorySid,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, 
       #{parentSid,jdbcType=INTEGER}, #{categoryTree,jdbcType=VARCHAR}, #{totalGoodsNum,jdbcType=INTEGER}, 
       #{offTheShelfGoodsNum,jdbcType=INTEGER}, #{outOfStockGoodsNum,jdbcType=INTEGER}, 
       #{brandNum,jdbcType=INTEGER}, #{lowestPrice,jdbcType=DOUBLE}, #{highestPrice,jdbcType=DOUBLE}, 
-      #{yhdCategoryTree,jdbcType=VARCHAR}, #{yhdCategoryUrl,jdbcType=VARCHAR}, #{cdate,jdbcType=TIMESTAMP}
-      )
+      #{yhdCategoryTree,jdbcType=VARCHAR}, #{yhdCategoryUrl,jdbcType=VARCHAR}, #{matchType,jdbcType=INTEGER}, 
+      #{isleaf,jdbcType=INTEGER}, #{cdate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bailian.model.CategoryPerformanceBasic" >
     insert into bl_category_performance_basic
@@ -85,6 +89,12 @@
       </if>
       <if test="yhdCategoryUrl != null" >
         yhd_category_url,
+      </if>
+      <if test="matchType != null" >
+        match_type,
+      </if>
+      <if test="isleaf != null" >
+        isleaf,
       </if>
       <if test="cdate != null" >
         cdate,
@@ -130,6 +140,12 @@
       <if test="yhdCategoryUrl != null" >
         #{yhdCategoryUrl,jdbcType=VARCHAR},
       </if>
+      <if test="matchType != null" >
+        #{matchType,jdbcType=INTEGER},
+      </if>
+      <if test="isleaf != null" >
+        #{isleaf,jdbcType=INTEGER},
+      </if>
       <if test="cdate != null" >
         #{cdate,jdbcType=TIMESTAMP},
       </if>
@@ -174,6 +190,12 @@
       <if test="yhdCategoryUrl != null" >
         yhd_category_url = #{yhdCategoryUrl,jdbcType=VARCHAR},
       </if>
+      <if test="matchType != null" >
+        match_type = #{matchType,jdbcType=INTEGER},
+      </if>
+      <if test="isleaf != null" >
+        isleaf = #{isleaf,jdbcType=INTEGER},
+      </if>
       <if test="cdate != null" >
         cdate = #{cdate,jdbcType=TIMESTAMP},
       </if>
@@ -194,6 +216,8 @@
       highest_price = #{highestPrice,jdbcType=DOUBLE},
       yhd_category_tree = #{yhdCategoryTree,jdbcType=VARCHAR},
       yhd_category_url = #{yhdCategoryUrl,jdbcType=VARCHAR},
+      match_type = #{matchType,jdbcType=INTEGER},
+      isleaf = #{isleaf,jdbcType=INTEGER},
       cdate = #{cdate,jdbcType=TIMESTAMP}
     where category_sid = #{categorySid,jdbcType=INTEGER}
   </update>
@@ -207,9 +231,9 @@
 
   <select id="selectIndexBasic" resultType="java.util.Map">
     select c.total_num, c.brand_num, d.sales  from (select 1 id, sum(total_goods_num - off_the_shelf_goods_num) total_num ,
-sum(brand_num) brand_num from bl_category_performance_basic where level = 1) c JOIN
-(select 1 id, sum(b.sales) sales from bl_category_performance_basic a JOIN bl_category_performance_category_monthly_sales b
-on a.level = 1 and a.category_sid = b.category_sid where b.month >'2015-12') d on c.id = d.id
+    sum(brand_num) brand_num from bl_category_performance_basic where level = 1) c JOIN
+    (select 1 id, sum(b.sales) sales from bl_category_performance_basic a JOIN bl_category_performance_category_monthly_sales b
+    on a.level = 1 and a.category_sid = b.category_sid where b.month >'2015-12') d on c.id = d.id
   </select>
 
   <select id="selectCategoryTree" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -219,5 +243,23 @@ on a.level = 1 and a.category_sid = b.category_sid where b.month >'2015-12') d o
         category_sid = #{_parameter,jdbcType=INTEGER}
       </if>
     </where>
+  </select>
+
+  <select id="listPage" resultType="com.bailian.model.CategoryPerformanceBasic" parameterType="java.util.Map">
+    SELECT DISTINCT
+    a.*, b.brandsNum,
+    b.goodsNum
+    FROM
+    bl_category_performance_basic a
+    JOIN YHD_CATEGORY b ON a.yhd_category_tree = b.category_name
+    <where>
+      <if test="categorySid != null" >
+       AND category_sid = #{categorySid,jdbcType=INTEGER}
+      </if>
+      and isleaf = 1
+    </where>
+    <if test="columnOrder != null">
+      ORDER BY ${columnOrder}
+    </if>
   </select>
 </mapper>

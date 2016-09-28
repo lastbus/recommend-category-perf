@@ -616,56 +616,6 @@ public class CategoryPerformanceDetailController {
         return result;
     }
 
-    @RequestMapping(value = "/getYhdCategoryTree", produces = {"text/json;charset=gb2312"})
-    @ResponseBody
-    public String getYhdCategoryTree(HttpServletRequest request, @org.apache.ibatis.annotations.Param("categoryId") String categoryId) {
-        Integer categorySid = null;
-        /*if (categoryId != null && !categoryId.equals("")) {
-            categorySid = Integer.parseInt(categoryId);
-        }
-        CategoryPerformanceBasic basic = this.categoryPerformanceBasicService.selectCategoryTree(categorySid);
-        String keyword = null;
-        if (basic != null) {
-            keyword = "'%" + basic.getCategoryTree().split(">")[0] + "%'";
-        }
-        Map map = new HashMap();
-        map.put("keyword", keyword);*/
-        List<YhdCategory> list = this.yhdCategoryService.getCategory();
-        JSONArray jsonArray =new JSONArray();
-        for(YhdCategory category:list)
-        {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id",category.getId());
-            jsonObject.put("pid",category.getId());
-            jsonObject.put("name",category.getCategoryName());
-            jsonObject.put("isParent","false");
-            jsonObject.put("open","true");
-            jsonArray.add(jsonObject);
-        }
-        return jsonArray.toString();
-    }
-
-    @RequestMapping("/updateYhdUrl")
-    @ResponseBody
-    public String updateYhdUrl(@org.apache.ibatis.annotations.Param("yhdCategory") String yhdCategory) {
-        YhdCategory yhdCategory1 = this.yhdCategoryService.selectUrl(yhdCategory);
-        String result = JSONObject.toJSONString(yhdCategory1.getCategoryName());
-        return result;
-    }
-    @RequestMapping("/updateCategoryBasic")
-    @ResponseBody
-    public void updateCategoryBasic(@org.apache.ibatis.annotations.Param("yhdCategory") String yhdCategory,
-                                    @org.apache.ibatis.annotations.Param("categoryid") String categoryid) {
-        YhdCategory yhdCategory1 = this.yhdCategoryService.selectUrl(yhdCategory);
-        String url = yhdCategory1.getCategoryName();
-        CategoryPerformanceBasic categoryPerformanceBasic = new CategoryPerformanceBasic();
-        categoryPerformanceBasic.setYhdCategoryTree(yhdCategory);
-        categoryPerformanceBasic.setYhdCategoryUrl(url);
-        if (categoryid != null && categoryid.equals("")) {
-            categoryPerformanceBasic.setCategorySid(Integer.parseInt(categoryid));
-        }
-        this.categoryPerformanceBasicService.updateByPrimaryKeySelective(categoryPerformanceBasic);
-    }
 
 
     @RequestMapping("/categoryYhdBasic")

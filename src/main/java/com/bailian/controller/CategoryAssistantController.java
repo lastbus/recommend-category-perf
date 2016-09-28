@@ -424,11 +424,15 @@ public class CategoryAssistantController {
     @ResponseBody
     public String categoryImportGoodsTable(BootPage bootPage,
                                    @Param("categoryid") String categoryid,
+                                   @Param("goodsId") String goodsId,
                                    @Param("column") String column,
                                    @Param("order") String order) {
         Map param = new HashMap();
         if (categoryid.matches("^\\d+$")&& categoryid != null && !categoryid.equals("")) {
             param.put("categorySid", Integer.parseInt(categoryid));
+        }
+        if (goodsId.matches("^\\d+$")&& goodsId != null && !goodsId.equals("")) {
+            param.put("goodsId", Integer.parseInt(goodsId));
         }
         if (column != null && !column.equals("") && order != null && !order.equals("")) {
             if (column.equals("blGoodsPrice")) {
@@ -437,7 +441,7 @@ public class CategoryAssistantController {
             if (column.equals("yhdGoodsPrice")) {
                 column = "yhd_goods_price";
             }
-            if (column.equals("yhdGoodsType")) {
+            if (column.equals("strYhdGoodsType")) {
                 column = "yhd_goods_type";
             }
             param.put("columnOrder", column + " " + order);
@@ -447,6 +451,17 @@ public class CategoryAssistantController {
         bootPage.setPage(page);
         String result = bootPage.printOut(list);
         return result;
+    }
+
+    @RequestMapping("/deleteBlYhdGoodsCompare")
+    @ResponseBody
+    public String deleteBlYhdGoodsCompare(@Param("yhdCategoryUrl") String yhdCategoryUrl,
+                                          @Param("yhdGoodsUrl") String yhdGoodsUrl) {
+        BlYhdItemsCompareKey key = new BlYhdItemsCompareKey();
+        key.setYhdGoodsUrl(yhdGoodsUrl);
+        key.setYhdCategoryUrl(yhdCategoryUrl);
+        this.blYhdItemsCompareService.deleteByPrimaryKey(key);
+        return "1";
     }
 
 }

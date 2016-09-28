@@ -1,7 +1,6 @@
 package com.bailian.controller;
 
 import com.bailian.model.BootPage;
-import com.bailian.model.CategoryPerformanceBasic;
 import com.bailian.model.CategoryPerformanceScore;
 import com.bailian.model.DimManagementCategoryTree;
 import com.bailian.page.Page;
