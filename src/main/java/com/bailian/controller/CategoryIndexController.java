@@ -196,12 +196,11 @@ public class CategoryIndexController {
         if (map.size() == 0) {
             return "0";
         }
+        java.text.DecimalFormat   df   =new   java.text.DecimalFormat("#########.00");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("brandNum", map.get("brand_num"));
         jsonObject.put("totalNum", map.get("total_num"));
-        jsonObject.put("sales", map.get("sales"));
+        jsonObject.put("sales", Double.parseDouble(df.format(map.get("sales"))));
         return jsonObject.toString();
     }
-
-
 }

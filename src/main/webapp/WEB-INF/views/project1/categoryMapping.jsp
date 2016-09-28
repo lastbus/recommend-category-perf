@@ -116,6 +116,18 @@
         <div class="modal-content " style="height:530px; width: 450px; text-align: center;" >
             <div class="modal-header">
                 <h4 class="modal-title">一号店类目列表</h4>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" id="keyword" class="form-control" placeholder="关键词">
+                            <span class="input-group-btn">
+                                <button id="chooseYhdCategory" class="btn btn-outline" type="button"
+                                        onclick="search_ztree('yhdCategoryTree', 'keyword')">搜索</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <hr style="border-top:0px ;" />
             </div>
             <div class="modal-body" style="height:400px;">
 
@@ -141,7 +153,9 @@
 
 <script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.core.js" type="text/javascript"></script>
 <script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.all.js" type="text/javascript"></script>
-
+<script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.exhide.js" type="text/javascript"></script>
+<script src="${basePath}/assets/scripts/search_tree.js" type="text/javascript"></script>
+<script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.exhide.js" type="text/javascript"></script>
 <script type="text/javascript">
     var categoryPerformanceDetail_info = function(){
         var tableCategoryBasic = function () {
@@ -300,10 +314,11 @@
                 return false;
             }
             function onCheck(e, treeId, treeNode) {
-                // alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
+             //  alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
                 var zTree = $.fn.zTree.getZTreeObj("categoryTree"),
                         nodes = zTree.getCheckedNodes(true),
                         v = "";
+
                 var ids="";
                 for (var i=0, l=nodes.length; i<l; i++) {
                     v += nodes[i].name + ",";
@@ -360,7 +375,12 @@
                 callback: {
                     onCheck: onCheck,
                     beforeClick: beforeClick,
-                }
+                },view: {
+                    showIcon: false,
+                    selectedMulti: false,
+                    nameIsHTML: true,
+                    fontCss: setFontCss_ztree
+                },
             };
             var zNodes = [];
             function filter(treeId, parentNode, childNodes) {
@@ -406,9 +426,12 @@
                  hideMenu();
                  }*/
             }
+            $("#queryYhdCategory").click(function () {
+                $("#yhdCateogryModal").modal("show");
+                $.fn.zTree.init($("#yhdCategoryTree"), setting, zNodes);
+            });
             hideMenu()
             showMenu();
-            $.fn.zTree.init($("#yhdCategoryTree"), setting, zNodes);
         };
         var clickBt = function () {
             $("#queryBtn").click(function () {
@@ -418,9 +441,7 @@
                     alert("请输入正确的品类ID");
                 }
             });
-            $("#queryYhdCategory").click(function () {
-                $("#yhdCateogryModal").modal("show");
-            });
+
         };
         return {
             init: function () {

@@ -414,19 +414,19 @@
 </div>
 
 <div id="match-search-Modal" class="modal fade" role="dialog" aria-hidden="true" >
-    <div class="modal-dialog" style="height:520px; width: 500px; text-align: center;">
-        <div class="modal-content " style="height:520px; width: 500px; text-align: center;" >
+    <div class="modal-dialog"  >
+        <div class="modal-content " style="height:530px; width: 500px; text-align: center;" >
             <div class="modal-header">
                 <h4 class="modal-title">类目列表</h4>
                 <div class="form-group">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="input-group">
-                            <input type="text" id="keyword" class="form-control" placeholder="品类Id">
+                            <input type="text" id="keyword" class="form-control" placeholder="关键词">
+                            <span class="input-group-btn">
+                                <button id="queryCategory" class="btn btn-outline" type="button"
+                                        onclick="search_ztree('categoryTree', 'keyword')">搜索</button>
+                            </span>
                         </div>
-                    </div>
-                    <div class="col-md-1">
-                        <a href="javascript:;" id="search" class="btn green">
-                            <i class="glyphicon glyphicon-search"></i>查询</a>
                     </div>
                 </div>
                 <hr style="border-top:0px ;" />
@@ -456,6 +456,8 @@
 <script src="${basePath}/assets/scripts/echarts/echarts.min.js" type="text/javascript"></script>
 <script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.core.js" type="text/javascript"></script>
 <script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.all.js" type="text/javascript"></script>
+<script src="${basePath}/assets/scripts/search_tree.js" type="text/javascript"></script>
+<script src="${basePath}/assets/plugins/ztree/js/jquery.ztree.exhide.js" type="text/javascript"></script>
 
 <script type="text/javascript">
     var categoryPerformanceDetail_info = function(){
@@ -609,7 +611,7 @@
                     data: ['销售额']
                 },
                 grid: { // 控制图的大小，调整下面这些值就可以，
-                    x: 50,
+                    x: 90,
                     x2: 50,
                     y2: 30,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
                 },
@@ -1358,7 +1360,13 @@
                 callback: {
                     onCheck: onCheck,
                     beforeClick: beforeClick,
-                }
+                },
+                view: {
+                    showIcon: false,
+                    selectedMulti: false,
+                    nameIsHTML: true,
+                    fontCss: setFontCss_ztree
+                },
             };
             var zNodes = [];
             function filter(treeId, parentNode, childNodes) {
@@ -1373,7 +1381,7 @@
                 return false;
             }
             function onCheck(e, treeId, treeNode) {
-                // alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
+                //alert(treeNode.tId + ", " + treeNode.name + "," + treeNode.checked);
                 var zTree = $.fn.zTree.getZTreeObj("categoryTree"),
                         nodes = zTree.getCheckedNodes(true),
                         v = "";
@@ -1428,9 +1436,11 @@
                  hideMenu();
                  }*/
             }
-            hideMenu()
             showMenu();
+            $("#reMatch").click(function() {
+            $("#match-search-Modal").modal("show");
             $.fn.zTree.init($("#categoryTree"), setting, zNodes);
+            });
         };
 
         var clickBt = function(){
@@ -1495,10 +1505,7 @@
                 };
                 toMainPage("${basePath}/category/categoryHotcakeCompare.html", data);
             });
-            //重新匹配功能暂未开启
-           $("#reMatch").click(function() {
-                $("#match-search-Modal").modal("show");
-            });
+
         };
         var insertTable = function() {
             $.ajax({

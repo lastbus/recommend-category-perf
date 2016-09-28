@@ -620,7 +620,7 @@ public class CategoryPerformanceDetailController {
 
     @RequestMapping("/categoryYhdBasic")
     @ResponseBody
-    public String categoryYhdBasic(@org.apache.ibatis.annotations.Param("categoryId") String categoryId) {
+    public String categoryYhdBasic(@Param("categoryId") String categoryId) {
         Integer category = null;
         if (categoryId != null && !categoryId.equals("")) {
             category = Integer.parseInt(categoryId);
