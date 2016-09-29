@@ -240,9 +240,11 @@
                     events: {
                         'click .edit': function (e, value, row, index) {
                             //  alert('重新发送该邀请, row: ' + JSON.stringify(row));
+                          //  console.log(JSON.stringify(row));
                             $("#edit-Modal").modal("show");
-                            $("#blCategoryTree").val(row.categoryTree)
-                            $("#yhdCategory").val(row.yhdCategoryTree)
+                            $("#blCategoryTree").val(row.categoryTree + ">" + row.categoryName + ">");
+                            $("#yhdCategory").val(row.yhdCategoryTree);
+                            $("#categoryYhdSubmit").unbind("click");
                             $("#categoryYhdSubmit").click(function () {
                                 $.ajax({
                                     type: 'post',
